@@ -1,0 +1,71 @@
+mysql> create table UserAuth2( id int(11) primary key, pass varchar(100) not null, salt varchar(20));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> drop table UserAuth;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> create table UserAuth(id int(11) primary key, pass varchar(100) not null, salt varchar(20));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> drop table UserAuth2;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> insert into UserAuth values( 1, aes_encrypt( concat('pass_shef', 'salt123'), 'key123'), 'salt123');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from UserAuth;
++----+---------------------------------------------------+---------+
+| id | pass                                              | salt    |
++----+---------------------------------------------------+---------+
+|  1 | rØ'ÅŸ»ÝOrŽd,<‡p „SeMk‡žxÖ                  | salt123 |
++----+---------------------------------------------------+---------+
+1 row in set (0.00 sec)
+
+mysql> select id, replace(cast(aes_decrypt(pass, 'key123') as char(100)), salt, '') from UserAuth;
++----+-------------------------------------------------------------------+
+| id | replace(cast(aes_decrypt(pass, 'key123') as char(100)), salt, '') |
++----+-------------------------------------------------------------------+
+|  1 | pass_shef                                                         |
++----+-------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from UserAuth where pass = aes_encrypt(concat('pass_shef', salt), 'key123');
++----+---------------------------------------------------+---------+
+| id | pass                                              | salt    |
++----+---------------------------------------------------+---------+
+|  1 | rØ'ÅŸ»ÝOrŽd,<‡p „SeMk‡žxÖ                  | salt123 |
++----+---------------------------------------------------+---------+
+1 row in set (0.00 sec)
+
+mysql> select id from UserAuth where pass = aes_encrypt(concat('pass_shef', salt), 'key123');
++----+
+| id |
++----+
+|  1 |
++----+
+1 row in set (0.00 sec)
+
+mysql> select id from UserAuth where pass = aes_encrypt(concat('pass_shef', salt), 'key123');
++----+
+| id |
++----+
+|  1 |
++----+
+1 row in set (0.00 sec)
+
+mysql> select id from UserAuth where pass = aes_encrypt(concat('pass_shef', salt), 'key123');
++----+
+| id |
++----+
+|  1 |
++----+
+1 row in set (0.00 sec)
+
+mysql> select * from UserAuth;
++----+---------------------------------------------------+----------+
+| id | pass                                              | salt     |
++----+---------------------------------------------------+----------+
+|  1 | rØ'ÅŸ»ÝOrŽd,<‡p „SeMk‡žxÖ                  | salt123  |
+|  2 | pass_shef                                         | salt1234 |
++----+---------------------------------------------------+----------+
+2 rows in set (0.00 sec)
